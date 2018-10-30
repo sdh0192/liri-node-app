@@ -5,70 +5,43 @@ var keys = require("./keys.js");
 var inquirer = require("inquirer");
 var Spotify = require("node-spotify-api");
 var request = require("request");
+var command = process.argv[2];
+var userInput = process.argv[3];
+console.log(process.argv);
 
 var spotify = new Spotify({
     id: keys.spotify.id,
     secret: keys.spotify.secret
 });
 
-mainMenu();
-
-var menu = ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says"];
-var source = "";
-
-function mainMenu(){
-    console.log("");
-    console.log("");
-    inquirer.prompt([{
-        type: "list",
-        name: "selection",
-        message: "Choose an option",
-        choices: ["concert-this", "spotify-this-song", "movie-this", "do-what-it-says", "exit"]
-    }]).then(function(user){
-        menuSelection(user.selection);
-    })
-
-}
+menuSelection(command);
 
 function menuSelection(selection){
     switch(selection){
         case "concert-this": 
-        searchBandsInTown();
+        searchBandsInTown(userInput);
         break;
         case "spotify-this-song":
-        spotifyResults();
+        spotifyResults(userInput);
         break;
         case "movie-this":
-        displayMovieInfo();
+        displayMovieInfo(userInput);
         break;
         case "do-what-it-says":
-        randomSelection();
-        case "exit":
-        break;
-    }
-}
-function selection(action, input){
-    switch(action){
-        case "concert-this":
-        searchBandsInTown(input);
-        break;
-        case "spotify-this-song":
-        spotifyResults(input);
-        break;
-        case "movie-this":
-        displayMovieInfo(input);
-        break;
-        case "do-what-it-says":
-        randomSelection();
-        break;
+        randomSelection(userInput);
     }
 }
 
 
+function pullTxt(){
+
+}
 
 
 //BANDS IN TOWN FUNCTION ------------------------------------------------------------------------------------
 function searchBandsInTown(artist) {
+    
+
 
     var url = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
     request(url, function (error, response, body) {
@@ -96,7 +69,7 @@ function displayMovieInfo(movie) {
         if (error) {
             console.log(error);
         }
-
+        
         // console.log(JSON.parse(body));
         var movieTitle = JSON.parse(body).Title;
         var movieYear = JSON.parse(body).Year;
